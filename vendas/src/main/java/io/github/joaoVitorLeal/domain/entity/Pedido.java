@@ -11,9 +11,10 @@ public class Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Muitos pedidos para um cliente
+    @ManyToOne // Muitos pedidos para um cliente
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 

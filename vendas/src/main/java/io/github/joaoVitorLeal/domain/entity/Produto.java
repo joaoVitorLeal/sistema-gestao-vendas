@@ -9,8 +9,10 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private Integer id;
 
+    @Column
     private String descricao;
 
     @Column(name = "preco_unitario", precision = 20, scale = 2)

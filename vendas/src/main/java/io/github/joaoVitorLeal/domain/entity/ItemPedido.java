@@ -8,16 +8,18 @@ public class ItemPedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Muitos itens-pedidos para um pedido
+    @ManyToOne // Muitos itens-pedidos para um pedido
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Muitos itens de pedido para um produto
+    @ManyToOne() // Muitos itens de pedido para um produto
     @JoinColumn(name = "produto_id", table = "produto")
     private Produto produto;
 
+    @Column
     private Integer quantidade;
 
     public Integer getId() {
