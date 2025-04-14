@@ -38,8 +38,8 @@ public class VendasApplication {
             System.out.println("Buscando cliente");
             clienteRepository.buscarPorNome("nue").forEach(System.out::println);
 
-//            System.out.println("Deletando clientes");
-//            clienteRepository.obterClientes().forEach(clienteRepository::deletar);
+            System.out.println("Deletando clientes");
+            clienteRepository.obterClientes().forEach(clienteRepository::deletar);
 
             todosClientes =  clienteRepository.obterClientes();
             if (todosClientes.isEmpty()) {

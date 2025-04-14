@@ -1,8 +1,17 @@
 package io.github.joaoVitorLeal.domain.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "cliente")
 public class Cliente {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true, nullable = false)
     private Integer id;
+
+    @Column(length = 100, nullable = false)
     private String nome;
 
     public Cliente() {

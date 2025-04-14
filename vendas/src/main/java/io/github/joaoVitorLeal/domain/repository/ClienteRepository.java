@@ -2,66 +2,57 @@ package io.github.joaoVitorLeal.domain.repository;
 
 import io.github.joaoVitorLeal.domain.entity.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
 public class ClienteRepository {
 
-    private static String INSERT = "INSERT INTO cliente (nome) VALUES (?) ";
-    private static String SELECT_ALL = "SELECT * FROM cliente ";
-    private static String UPDATE = "UPDATE cliente SET nome = ? WHERE id = ? ";
-    private static String DELETE = "DELETE FROM cliente WHERE id = ? ";
-
     @Autowired
-    JdbcTemplate jdbcTemplate; // Classe que possui a conexão já configurada e possui métodos para realizar operações no banco de dados
+    private EntityManager entityManager; // Realiza todas as operações na base de dados com as entidades
 
+    @Transactional // Abre uma transação para realizar operações com o EntityManager
     public Cliente salvar(Cliente cliente) {
-        jdbcTemplate.update(INSERT,  new Object[]{cliente.getNome()}); // Passamos a query SQL e criado um array de Object, onde cada posição é um valor que será substituído nos placeholders (?) da query SQL.
+        // antes de uma entidade ser salva ele se encontra no estado 'Transiente', após a persistência, 'Manager' (gerenciável)
+        entityManager.persist(cliente);
         return cliente;
     }
 
+    @Transactional
     public Cliente atualizar (Cliente cliente) {
-        jdbcTemplate.update(UPDATE, new Object[]{
-                cliente.getNome(), cliente.getId(),
-        });
+        entityManager.merge(cliente);
         return cliente;
     }
 
+    @Transactional
     public void deletar(Cliente cliente) {
-        deletar(cliente.getId());
+        if(!entityManager.contains(cliente)) {
+            cliente = entityManager.merge(cliente); // o merge serve para sincronizar o cliente com o EntityManager
+        }
+        entityManager.remove(cliente);
     }
 
+    @Transactional
     public void deletar(Integer id) {
-        jdbcTemplate.update(DELETE, new Object[]{id});
+        Cliente cliente = entityManager.find(Cliente.class, id);
+        deletar(cliente);
     }
 
+    @Transactional(readOnly = true) // transação apenas de leitura, JPA otimiza a consulta
     public List<Cliente> buscarPorNome(String nome) {
-        return jdbcTemplate.query(
-                SELECT_ALL.concat("WHERE nome LIKE ? "),
-                new Object[]{"%" + nome + "%"},
-                getClienteRowMapper()
-        );
+        String jpql = "select c from Cliente c where c.nome like :nome";
+        TypedQuery<Cliente> query = entityManager.createQuery(jpql, Cliente.class);
+        query.setParameter("nome", "%" + nome + "%");
+        return query.getResultList();
     }
 
+    @Transactional(readOnly = true)
     public List<Cliente> obterClientes() {
-        return jdbcTemplate.query(SELECT_ALL, getClienteRowMapper());
-    }
-
-    private static RowMapper<Cliente> getClienteRowMapper() {
-        // RowMapper (mapeia o resultado de consulta do banco de dados para uma classe) ///
-        return new RowMapper<Cliente>() {
-            @Override
-            public Cliente mapRow(ResultSet resultSet, int i) throws SQLException {
-                Integer id = resultSet.getInt("id"); // obtém o Int da coluna 'id'
-                String nome = resultSet.getString("nome"); // obtém a String da coluna 'nome'
-                return new Cliente(id, nome);
-            }
-        };
+        return entityManager.createQuery("from Cliente", Cliente.class)
+                .getResultList();
     }
 }
