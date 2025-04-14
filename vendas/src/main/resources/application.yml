@@ -7,8 +7,12 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-
+    properties:
+      hibernate:
+        show_sql: true # Exibe SQL
+        format_sql: true # Formata exibição do SQL
   h2:
     console:
       enabled: true
       path: /h2-console
+

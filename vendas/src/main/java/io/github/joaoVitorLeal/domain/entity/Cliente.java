@@ -8,10 +8,10 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private Integer id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String nome;
 
     public Cliente() {

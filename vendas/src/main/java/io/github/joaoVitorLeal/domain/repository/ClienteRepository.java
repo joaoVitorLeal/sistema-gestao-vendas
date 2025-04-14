@@ -1,58 +1,31 @@
 package io.github.joaoVitorLeal.domain.repository;
 
 import io.github.joaoVitorLeal.domain.entity.Cliente;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
-@Repository
-public class ClienteRepository {
 
-    @Autowired
-    private EntityManager entityManager; // Realiza todas as operações na base de dados com as entidades
+public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+    List<Cliente> getByNomeLike(String nome);
 
-    @Transactional // Abre uma transação para realizar operações com o EntityManager
-    public Cliente salvar(Cliente cliente) {
-        // antes de uma entidade ser salva ele se encontra no estado 'Transiente', após a persistência, 'Manager' (gerenciável)
-        entityManager.persist(cliente);
-        return cliente;
-    }
+    List<Cliente> findByNomeLikeOrIdOrderById(String nome, String id);
 
-    @Transactional
-    public Cliente atualizar (Cliente cliente) {
-        entityManager.merge(cliente);
-        return cliente;
-    }
+    Cliente findOneByNome(String nome); // Caso o nome sejá único (se enquadraria melhor em dados únicos como CPF)
 
-    @Transactional
-    public void deletar(Cliente cliente) {
-        if(!entityManager.contains(cliente)) {
-            cliente = entityManager.merge(cliente); // o merge serve para sincronizar o cliente com o EntityManager
-        }
-        entityManager.remove(cliente);
-    }
+    boolean existsByNome(String nome);
+    /// QueryMethod — HQL
+    @Query(value = "select c from Cliente c where c.nome like :nome")
+    List<Cliente> HQLEncontrarPorNome(@Param("nome") String nome);
 
-    @Transactional
-    public void deletar(Integer id) {
-        Cliente cliente = entityManager.find(Cliente.class, id);
-        deletar(cliente);
-    }
+    @Query(" delete from Cliente c where c.nome like :nome ")
+    @Modifying // Necessário, para @Query de deleção e atualização
+    void deleteByNome(String nome);
+    /// QueryMethod — SQL nativo
+    @Query(value = "select * from Cliente c where c.nome like '%:nome%'", nativeQuery = true)
+    List<Cliente> SQLEncontrarPorNome(@Param("nome") String nome);
 
-    @Transactional(readOnly = true) // transação apenas de leitura, JPA otimiza a consulta
-    public List<Cliente> buscarPorNome(String nome) {
-        String jpql = "select c from Cliente c where c.nome like :nome";
-        TypedQuery<Cliente> query = entityManager.createQuery(jpql, Cliente.class);
-        query.setParameter("nome", "%" + nome + "%");
-        return query.getResultList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Cliente> obterClientes() {
-        return entityManager.createQuery("from Cliente", Cliente.class)
-                .getResultList();
-    }
 }
