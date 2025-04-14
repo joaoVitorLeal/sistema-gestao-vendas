@@ -1,10 +1,23 @@
 package io.github.joaoVitorLeal.domain.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "item_pedido")
 public class ItemPedido {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Muitos itens-pedidos para um pedido
+    @JoinColumn(name = "pedido_id")
     private Pedido pedido;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Muitos itens de pedido para um produto
+    @JoinColumn(name = "produto_id", table = "produto")
     private Produto produto;
+
     private Integer quantidade;
 
     public Integer getId() {
