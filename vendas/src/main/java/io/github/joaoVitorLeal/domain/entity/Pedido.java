@@ -27,6 +27,8 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido") // Nome do objeto Pedido referenciado na entidade ItemPedido
     private List<ItemPedido> itens;
 
+
+
     public Integer getId() {
         return id;
     }
@@ -65,5 +67,15 @@ public class Pedido {
 
     public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "id=" + id +
+                ", cliente=" + cliente +
+                ", dataPedido=" + dataPedido +
+                ", total=" + total +
+                '}';
     }
 }

@@ -15,7 +15,7 @@ public class Cliente {
     @Column(length = 100)
     private String nome;
 
-    @OneToMany(mappedBy = "cliente") // mapeando relação já que na tabela cliente não existe referência para tabela pedido
+    @OneToMany(mappedBy = "cliente") // mapeando relação já que na tabela cliente não referencía a tabela pedido
     private Set<Pedido> pedidos;
 
     public Cliente() {

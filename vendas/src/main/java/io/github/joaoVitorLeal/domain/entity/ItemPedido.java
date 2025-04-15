@@ -16,7 +16,7 @@ public class ItemPedido {
     private Pedido pedido;
 
     @ManyToOne() // Muitos itens de pedido para um produto
-    @JoinColumn(name = "produto_id", table = "produto")
+    @JoinColumn(name = "produto_id")
     private Produto produto;
 
     @Column

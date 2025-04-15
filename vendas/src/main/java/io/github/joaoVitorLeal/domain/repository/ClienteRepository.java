@@ -10,6 +10,11 @@ import java.util.List;
 
 
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+
+    @Query(" select c from Cliente c left join fetch c.pedidos p where c.id = :id ") // LEFT JOIN: Trará um cliente independente dele ter pedido ou não.
+    Cliente findClienteFetchPedidos(Integer id);
+
+    ///////////////////////////////////////////////////////////////////////////////////
     List<Cliente> getByNomeLike(String nome);
 
     List<Cliente> findByNomeLikeOrIdOrderById(String nome, String id);
