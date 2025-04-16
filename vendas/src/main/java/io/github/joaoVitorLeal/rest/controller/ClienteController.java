@@ -25,7 +25,7 @@ public class ClienteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getClientePorId( @PathVariable Integer id ) {
+    public Cliente obterClientePorId( @PathVariable Integer id ) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_MESSAGE));
     }
