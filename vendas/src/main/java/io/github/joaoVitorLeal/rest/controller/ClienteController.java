@@ -10,10 +10,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.*;
+
+
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
-
 
     private static final String NOT_FOUND_MESSAGE = "Cliente não encontrado!";
 
@@ -23,29 +25,29 @@ public class ClienteController {
         this.repository = repository;
     }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{id}")
+    @ResponseStatus(OK)
     public Cliente obterClientePorId( @PathVariable Integer id ) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public Cliente salvar( @RequestBody Cliente cliente ) {
         return repository.save(cliente);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete (@PathVariable Integer id) {
+    @DeleteMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void deletar (@PathVariable Integer id) {
         Cliente cliente = repository.findById(id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_MESSAGE));
         repository.delete(cliente);
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
     public void atualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
         repository.findById(id)
                 .map( clienteEncontrado -> {
@@ -56,7 +58,7 @@ public class ClienteController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(OK)
     public List<Cliente> buscaPorFiltros(Cliente filtro) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -67,14 +69,7 @@ public class ClienteController {
                 ); // forma como deve buscar os valores String
 
 
-        Example example = Example.of(filtro, matcher); // obtém as propriedades que estão populados e criar um obj example
+        Example<Cliente> example = Example.of(filtro, matcher); // obtém as propriedades que estão populados e criar um obj example
         return  repository.findAll(example);
     }
-
-//    @RequestMapping(
-//            value = "/hello/{nome}",
-//            method = RequestMethod.GET,
-//            consumes = { "application/json", "application/xml" }, // Formato de dados consumidos pela aplicação nas requisições vindas dos clientes
-//            produces = { "application/json", "application/xml" } // Formatos de dados retornados nas respostas produzidas por esta aplicação
-//    )
 }
