@@ -19,7 +19,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     List<Cliente> findByNomeLikeOrIdOrderById(String nome, String id);
 
-    Cliente findOneByNome(String nome); // Caso o nome sejá único (se enquadraria melhor em dados únicos como CPF)
+    Cliente findOneByCpf(String cpf); // ( dados únicos como CPF)
 
     boolean existsByNome(String nome);
     /// QueryMethod — HQL
