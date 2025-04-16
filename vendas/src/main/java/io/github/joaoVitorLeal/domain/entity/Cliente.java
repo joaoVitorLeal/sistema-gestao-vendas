@@ -17,7 +17,7 @@ public class Cliente {
     @Column(length = 100)
     private String nome;
 
-    @Column(length = 11)
+    @Column(length = 11, unique = true)
     private String cpf;
 
     @JsonIgnore // Informa para o parse (transformador de objetos JSON) que deve ignorar essa propriedade
