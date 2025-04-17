@@ -1,5 +1,6 @@
 package io.github.joaoVitorLeal.domain.entity;
 
+import io.github.joaoVitorLeal.domain.enums.StatusPedido;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,11 @@ public class Pedido {
     @Column(precision = 20, scale = 2)
     private BigDecimal total;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private StatusPedido status;
+
     @OneToMany(mappedBy = "pedido") // Nome do objeto Pedido referenciado na entidade ItemPedido
     private List<ItemPedido> itens;
+
 }
