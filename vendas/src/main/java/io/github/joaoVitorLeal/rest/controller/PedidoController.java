@@ -10,6 +10,8 @@ import io.github.joaoVitorLeal.service.PedidoService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -27,7 +29,7 @@ public class PedidoController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Integer salvar(@RequestBody PedidoRequestDTO dto) {
+    public Integer salvar(@RequestBody @Valid PedidoRequestDTO dto) {
         Pedido pedido = service.salvar(dto);
         return pedido.getId();
     }
