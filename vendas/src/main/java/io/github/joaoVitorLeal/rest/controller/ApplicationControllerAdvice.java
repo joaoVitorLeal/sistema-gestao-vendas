@@ -2,6 +2,7 @@ package io.github.joaoVitorLeal.rest.controller;
 
 import io.github.joaoVitorLeal.exception.PedidoNaoEncontradoException;
 import io.github.joaoVitorLeal.exception.RegraNegocioException;
+import io.github.joaoVitorLeal.exception.SenhaInvalidaException;
 import io.github.joaoVitorLeal.rest.ApiErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -33,12 +34,19 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleMethodNotValidException(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getAllErrors()
+        List<String> errors = ex.getBindingResult()
+                .getAllErrors()
                 .stream()
                 .map(erro -> erro.getDefaultMessage())
                 .collect(Collectors.toList());
 
         return new ApiErrors(errors);
+    }
+
+    @ExceptionHandler(SenhaInvalidaException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrors handleSenhaInvalidaException(SenhaInvalidaException ex) {
+        return new ApiErrors(ex.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
