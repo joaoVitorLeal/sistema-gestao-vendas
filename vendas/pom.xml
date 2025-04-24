@@ -7,6 +7,7 @@
     <groupId>io.github.joaoVitorLeal</groupId>
     <artifactId>vendas</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>${project.packaging}</packaging> <!-- Referenciado pelo profile -->
 
 
     <parent> <!-- Template do spring boot — todos os starters inseridos nas dependências, serão compatíveis com essa versão do parent -->
@@ -14,6 +15,28 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.4.4</version>
     </parent>
+
+    <!-- Profiles do Maven -->
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <id>desenvolvimento</id>
+            <properties>
+                <project.packaging>jar</project.packaging>
+                <tomcat.scope>compile</tomcat.scope>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>producao</id>
+            <properties>
+                <project.packaging>war</project.packaging>  <!-- Gerar o arquivo WAR. Também deve ser incluído a dependência do TomCat, e a classe main da aplicação deve extender a interface Servlet do Spring -->
+                <tomcat.scope>provided</tomcat.scope> <!-- Tomcat externo — provido pelo servidor da aplicação — (WAR packaging) -->
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <!-- Starter Básico: dependência que engloba várias outras dependências e configurações padrão para o funcionamento de uma aplicação Spring -->
@@ -27,6 +50,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>${tomcat.scope}</scope> <!-- Referenciado pelo profile -->
+        </dependency>
+
 
         <!-- Data JPA -->
         <dependency>
@@ -79,23 +108,25 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.6.1</version>
+            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.6.1</version>
+            <version>2.9.2</version>
         </dependency>
 
         <!-- Tools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
