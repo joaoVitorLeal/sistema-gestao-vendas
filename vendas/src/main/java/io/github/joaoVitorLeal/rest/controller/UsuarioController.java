@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
@@ -43,7 +40,8 @@ public class UsuarioController {
         try {
             Usuario usuario = Usuario.builder()
                     .login(credenciais.getLogin())
-                    .senha(credenciais.getSenha()).build();
+                    .senha(credenciais.getSenha())
+                    .build();
 
             UserDetails usuarioAutenticado = service.autenticar(usuario);
 
